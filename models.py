@@ -1,5 +1,6 @@
 """Models for Cupcake app."""
 
+from flask import request
 from flask_sqlalchemy import SQLAlchemy
 
 db = SQLAlchemy()
@@ -40,7 +41,7 @@ class Cupcake(db.Model):
     image = db.Column(
         db.Text,
         nullable=False,
-        default='https://tinyurl.com/demo-cupcake'
+        default='https://tinyurl.com/demo-cupcake' # Make it a global constant
     )
 
     def serialize(self):
@@ -53,3 +54,34 @@ class Cupcake(db.Model):
             "rating": self.rating,
             "image": self.image
         }
+
+    def check_if_none_and_update(self):
+        '''Checks which values are passed into the request and update accordingly'''
+
+        try:
+            updated_flavor = request.json['flavor']
+            self.flavor = updated_flavor
+
+        except KeyError:
+            pass
+
+        try:
+            updated_size = request.json['size']
+            self.size = updated_size
+
+        except KeyError:
+            pass
+
+        try:
+            updated_rating = request.json['rating']
+            self.rating = updated_rating
+
+        except KeyError:
+            pass
+
+        try:
+            updated_image = request.json['image']
+            self.image = updated_image
+
+        except KeyError:
+            pass

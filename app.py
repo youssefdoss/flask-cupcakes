@@ -22,23 +22,26 @@ def list_all_cupcakes():
 
 @app.get('/api/cupcakes/<int:cupcake_id>')
 def list_single_cupcake(cupcake_id):
-    """ Return JSON data from single cupcake. """
+    """ Return JSON data from single cupcake. {'cupcake': {id, ...}}"""
 
     cupcake = Cupcake.query.get_or_404(cupcake_id)
-
     serialized = cupcake.serialize()
 
     return jsonify(cupcake = serialized)
 
 @app.post('/api/cupcakes')
 def create_cupcake():
-    """ Creat cupcake from posted JSON data and return it
+    """ Create cupcake from posted JSON data and return it
         {'cupcake': {id, ...}} """
 
     flavor = request.json['flavor']
     size = request.json['size']
     rating = request.json['rating']
-    image = request.json['image']
+    try:
+        image = request.json['image']
+    
+    except KeyError:
+        image = None
 
     new_cupcake = Cupcake(flavor = flavor,
                             size = size,
@@ -52,5 +55,29 @@ def create_cupcake():
 
     return (jsonify(cupcake = serialized), 201)
 
+@app.patch('/api/cupcakes/<int:cupcake_id>')
+def update_cupcake(cupcake_id):
+    '''Update cupcake from patched JSON data and return it
+    {'cupcake': {id, flavor, size, rating, image}}'''
 
+    cupcake = Cupcake.query.get_or_404(cupcake_id)
+    cupcake.check_if_none_and_update()
 
+    db.session.commit()
+
+    serialized = cupcake.serialize()
+
+    return jsonify(cupcake=serialized)
+
+@app.delete('/api/cupcakes/<int:cupcake_id>')
+def delete_cupcake(cupcake_id):
+    '''Delete cupcake from JSON cupcake_id and return JSON cupcake_id
+    {deleted: [cupcake_id]}'''
+
+    cupcake = Cupcake.query.get_or_404(cupcake_id)
+
+    db.session.delete(cupcake)
+
+    db.session.commit()
+
+    return jsonify(deleted=cupcake_id)

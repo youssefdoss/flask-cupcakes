@@ -26,7 +26,6 @@ CUPCAKE_DATA_2 = {
     "flavor": "TestFlavor2",
     "size": "TestSize2",
     "rating": 10,
-    "image": "http://test.com/cupcake2.jpg"
 }
 
 
@@ -105,7 +104,7 @@ class CupcakeViewsTestCase(TestCase):
                     "flavor": "TestFlavor2",
                     "size": "TestSize2",
                     "rating": 10,
-                    "image": "http://test.com/cupcake2.jpg"
+                    "image": "https://tinyurl.com/demo-cupcake"
                 }
             })
 
