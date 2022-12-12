@@ -1,6 +1,6 @@
 """Flask app for Cupcakes"""
 
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, render_template
 from models import db, connect_db, Cupcake
 
 app = Flask(__name__)
@@ -37,11 +37,7 @@ def create_cupcake():
     flavor = request.json['flavor']
     size = request.json['size']
     rating = request.json['rating']
-    try:
-        image = request.json['image'] #can replace with request.json.get()
-
-    except KeyError:
-        image = None
+    image = request.json.get('image', None)
 
     new_cupcake = Cupcake(flavor = flavor,
                             size = size,
@@ -81,3 +77,9 @@ def delete_cupcake(cupcake_id):
     db.session.commit()
 
     return jsonify(deleted=cupcake_id)
+
+@app.get('/')
+def show_homepage():
+    '''Displays home page with list of cupcakes and add cupcake form'''
+
+    return render_template('index.html')
