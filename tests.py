@@ -50,6 +50,7 @@ class CupcakeViewsTestCase(TestCase):
         db.session.rollback()
 
     def test_list_cupcakes(self):
+        """ Tests that list of cupcakes from setup are present in cupcake JSON """
         with app.test_client() as client:
             resp = client.get("/api/cupcakes")
 
@@ -70,6 +71,7 @@ class CupcakeViewsTestCase(TestCase):
             })
 
     def test_get_cupcake(self):
+        """ Tests that cupcake data is correct when querying for a cupcake"""
         with app.test_client() as client:
             url = f"/api/cupcakes/{self.cupcake.id}"
             resp = client.get(url)
@@ -87,6 +89,7 @@ class CupcakeViewsTestCase(TestCase):
             })
 
     def test_create_cupcake(self):
+        """ Tests that creating a cupcake returns the correct JSON and response code """
         with app.test_client() as client:
             url = "/api/cupcakes"
             resp = client.post(url, json=CUPCAKE_DATA_2)
@@ -109,3 +112,40 @@ class CupcakeViewsTestCase(TestCase):
             })
 
             self.assertEqual(Cupcake.query.count(), 2)
+
+    def test_update_cupcake(self):
+        """ Tests that updating a cupcake returns correct JSON """
+        with app.test_client() as client:
+            update_data = {"flavor": "mochi", "rating": 10}
+            url = f"/api/cupcakes/{self.cupcake.id}"
+            resp = client.patch(url, json=update_data)
+
+            self.assertEqual(resp.status_code, 200)
+
+            data = resp.json
+
+            self.assertEqual(data, {
+                "cupcake": {
+                    "id": self.cupcake.id,
+                    "flavor": "mochi",
+                    "size": "TestSize",
+                    "rating": 10,
+                    "image": "http://test.com/cupcake.jpg"
+                }
+            })
+
+
+
+    def test_delete_cupcake(self):
+        """ Tests that deleting a cupcake returns the correct JSON """
+        with app.test_client() as client:
+            url = f"/api/cupcakes/{self.cupcake.id}"
+            resp = client.delete(url)
+
+            self.assertEqual(resp.status_code, 200)
+
+            data = resp.json
+
+            self.assertEqual(data, {"deleted": self.cupcake.id})
+
+
