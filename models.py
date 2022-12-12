@@ -57,7 +57,7 @@ class Cupcake(db.Model):
 
     def check_if_none_and_update(self):
         '''Checks which values are passed into the request and update accordingly'''
-
+        #todo: self.flavor = request.json.get('flavor', self.flavor)
         try:
             updated_flavor = request.json['flavor']
             self.flavor = updated_flavor

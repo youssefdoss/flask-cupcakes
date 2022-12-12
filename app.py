@@ -38,8 +38,8 @@ def create_cupcake():
     size = request.json['size']
     rating = request.json['rating']
     try:
-        image = request.json['image']
-    
+        image = request.json['image'] #can replace with request.json.get()
+
     except KeyError:
         image = None
 
@@ -72,7 +72,7 @@ def update_cupcake(cupcake_id):
 @app.delete('/api/cupcakes/<int:cupcake_id>')
 def delete_cupcake(cupcake_id):
     '''Delete cupcake from JSON cupcake_id and return JSON cupcake_id
-    {deleted: [cupcake_id]}'''
+    {deleted: cupcake_id}'''
 
     cupcake = Cupcake.query.get_or_404(cupcake_id)
 
